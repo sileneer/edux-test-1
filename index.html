@@ -133,6 +133,157 @@
         border-bottom: 2px dotted currentColor;
       }
 
+      /* ---------- Chat ---------- */
+
+      .chat-intro {
+        max-width: 34em;
+        margin: 0 0 1.5rem;
+        color: var(--ink-soft);
+      }
+
+      .chat-log {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        min-height: 7rem;
+        max-height: 22rem;
+        overflow-y: auto;
+        padding: 1rem;
+        border: 1px solid var(--rule);
+        background: #fffdf7;
+      }
+
+      .chat-log:empty::before {
+        content: "No messages yet — ask the first question.";
+        margin: auto;
+        font-family: var(--sans);
+        font-size: 0.9rem;
+        color: var(--ink-soft);
+      }
+
+      .msg {
+        max-width: 90%;
+        padding: 0.65rem 0.85rem;
+        font-size: 1rem;
+        line-height: 1.55;
+      }
+
+      .msg p {
+        margin: 0;
+      }
+
+      .msg--user {
+        align-self: flex-end;
+        background: #efe7d6;
+        border: 1px solid #e2d7c1;
+      }
+
+      .msg--bot {
+        align-self: flex-start;
+        max-width: 95%;
+        padding-block: 0.15rem;
+        padding-left: 0.85rem;
+        border-left: 2px solid var(--accent);
+      }
+
+      .msg--pending {
+        font-style: italic;
+        color: var(--ink-soft);
+      }
+
+      .chat-form {
+        display: flex;
+        align-items: flex-end;
+        gap: 0.6rem;
+        margin-top: 0.75rem;
+      }
+
+      .chat-form textarea {
+        flex: 1 1 auto;
+        min-height: 3rem;
+        padding: 0.7rem 0.8rem;
+        border: 1px solid var(--rule);
+        background: #fffdf7;
+        color: var(--ink);
+        font-family: var(--serif);
+        font-size: 1rem;
+        line-height: 1.5;
+        resize: vertical;
+      }
+
+      .chat-form textarea:focus-visible,
+      .chat-form button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .chat-form button {
+        flex: 0 0 auto;
+        padding: 0.7rem 1.4rem;
+        border: 1px solid var(--ink);
+        background: var(--ink);
+        color: var(--paper);
+        font-family: var(--sans);
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+      }
+
+      .chat-form button:hover:not(:disabled) {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .chat-form button:disabled {
+        opacity: 0.5;
+        cursor: progress;
+      }
+
+      .chat-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        font-family: var(--sans);
+        font-size: 0.8rem;
+        color: var(--ink-soft);
+      }
+
+      .chat-status {
+        flex: 1 1 auto;
+        margin: 0;
+      }
+
+      .chat-status[data-tone="error"] {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .chat-count {
+        flex: 0 0 auto;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        border: 0;
+        clip-path: inset(50%);
+      }
+
+      @media (max-width: 30rem) {
+        .chat-form {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+
       /* ---------- Footer ---------- */
 
       .site-footer {
@@ -212,6 +363,44 @@
           </p>
         </div>
       </section>
+
+      <section class="entry">
+        <p class="label">04 — Ask about it</p>
+        <div>
+          <h2>Ask a question</h2>
+          <p class="chat-intro">
+            Curious about this idea? Send a question and a small assistant will
+            answer, using what's written on this page.
+          </p>
+
+          <div
+            class="chat-log"
+            id="chat-log"
+            role="log"
+            aria-live="polite"
+            aria-label="Conversation"
+          ></div>
+
+          <form class="chat-form" id="chat-form">
+            <label class="visually-hidden" for="chat-input">Your question</label>
+            <textarea
+              id="chat-input"
+              name="message"
+              rows="2"
+              maxlength="2000"
+              placeholder="What would you like to ask?"
+              autocomplete="off"
+              required
+            ></textarea>
+            <button type="submit" id="chat-send">Send</button>
+          </form>
+
+          <div class="chat-meta">
+            <p class="chat-status" id="chat-status" role="status" aria-live="polite"></p>
+            <span class="chat-count" id="chat-count">0 / 2000</span>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer wrap">
@@ -220,5 +409,134 @@
         <li><span class="placeholder">[Link 1]</span></li>
       </ul>
     </footer>
+
+    <script>
+      (function () {
+        var MAX_LENGTH = 2000;
+
+        var form = document.getElementById("chat-form");
+        var input = document.getElementById("chat-input");
+        var log = document.getElementById("chat-log");
+        var sendButton = document.getElementById("chat-send");
+        var statusEl = document.getElementById("chat-status");
+        var countEl = document.getElementById("chat-count");
+
+        var history = [];
+        var busy = false;
+
+        function setStatus(text, tone) {
+          statusEl.textContent = text;
+          if (tone) {
+            statusEl.dataset.tone = tone;
+          } else {
+            delete statusEl.dataset.tone;
+          }
+        }
+
+        function updateCount() {
+          countEl.textContent = input.value.length + " / " + MAX_LENGTH;
+        }
+
+        function addBubble(role, text, extraClass) {
+          var bubble = document.createElement("div");
+          bubble.className =
+            "msg msg--" + role + (extraClass ? " " + extraClass : "");
+          var paragraph = document.createElement("p");
+          paragraph.textContent = text;
+          bubble.appendChild(paragraph);
+          log.appendChild(bubble);
+          log.scrollTop = log.scrollHeight;
+          return bubble;
+        }
+
+        function send(text) {
+          busy = true;
+          sendButton.disabled = true;
+          addBubble("user", text);
+          history.push({ role: "user", content: text });
+          var pending = addBubble("bot", "Thinking…", "msg--pending");
+          setStatus("Thinking…");
+
+          fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: history }),
+          })
+            .then(function (response) {
+              return response
+                .json()
+                .catch(function () {
+                  return null;
+                })
+                .then(function (data) {
+                  if (!response.ok || !data || !data.reply) {
+                    throw new Error(
+                      (data && data.message) ||
+                        "Something went wrong on my side. Please try again in a moment."
+                    );
+                  }
+                  return data.reply;
+                });
+            })
+            .then(function (reply) {
+              pending.remove();
+              addBubble("bot", reply);
+              history.push({ role: "assistant", content: reply });
+              setStatus("");
+            })
+            .catch(function (error) {
+              pending.remove();
+              // A failed fetch throws TypeError; anything else carries our text.
+              setStatus(
+                error instanceof TypeError
+                  ? "I couldn't reach the assistant. Please check your connection and try again."
+                  : error.message ||
+                      "Something went wrong on my side. Please try again in a moment.",
+                "error"
+              );
+              // Drop the unanswered turn so the next attempt starts clean.
+              history.pop();
+            })
+            .then(function () {
+              busy = false;
+              sendButton.disabled = false;
+              input.focus();
+            });
+        }
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          if (busy) return;
+
+          var text = input.value.trim();
+          if (!text) {
+            setStatus("Type a question first, then press Send.", "error");
+            return;
+          }
+          if (text.length > MAX_LENGTH) {
+            setStatus(
+              "That message is a little long. Could you shorten it and try again?",
+              "error"
+            );
+            return;
+          }
+
+          input.value = "";
+          updateCount();
+          send(text);
+        });
+
+        input.addEventListener("input", updateCount);
+
+        input.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            form.requestSubmit();
+          }
+        });
+
+        updateCount();
+      })();
+    </script>
   </body>
 </html>
