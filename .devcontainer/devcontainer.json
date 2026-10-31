@@ -1,0 +1,14 @@
+{
+  "name": "EduX Starter",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postAttachCommand": "bash .devcontainer/start.sh",
+  "forwardPorts": [3000, 4096],
+  "portsAttributes": {
+    "3000": { "label": "Your website", "onAutoForward": "openPreview" },
+    "4096": { "label": "OpenCode", "onAutoForward": "silent" }
+  },
+  "customizations": {
+    "codespaces": { "openFiles": ["README.md", "content.md"] }
+  }
+}
