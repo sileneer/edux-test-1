@@ -6,21 +6,21 @@ Fill this in, then ask the agent to use it. Rough notes are fine.
 
 ## About me
 
-- Name to show:
-- What I study:
-- One sentence about me:
+- Name to show: [Your name]
+- What I study: [What you study]
+- One sentence about me: [One sentence about you]
 
 ## My humanities idea
 
-- A text, debate, historical moment, or way of teaching I care about:
-- Why it matters to me:
-- Who I would like to explore it with:
+- A text, debate, historical moment, or way of teaching I care about: [Name of the teaching approach]
+- Why it matters to me: [Why it matters to you]
+- Who I would like to explore it with: Anyone curious
 
 ## How it should feel
 
-- Three words for the mood (for example: quiet, curious, handmade):
-- A website, book, or place it should remind people of:
+- Three words for the mood: warm, bold, editorial
+- A website, book, or place it should remind people of: A university reading list
 
 ## Links I am happy to share
 
--
+- [Link 1]

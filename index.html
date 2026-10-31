@@ -3,33 +3,222 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>My EduX site</title>
+    <title>[Your name] — A way of teaching</title>
+    <meta
+      name="description"
+      content="A personal page about [Your name] and one idea in the humanities: a way of teaching."
+    />
     <style>
+      :root {
+        --paper: #faf7f0;
+        --ink: #17150f;
+        --ink-soft: #4c473b;
+        --rule: #d8d0be;
+        --accent: #a8402a;
+        --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+          "Times New Roman", serif;
+        --sans: ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial,
+          sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
       body {
         margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 24px;
-        box-sizing: border-box;
-        background: #faf9f5;
-        color: #141413;
-        font-family: Georgia, "Times New Roman", serif;
-        text-align: center;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--serif);
+        font-size: 1.0625rem;
+        line-height: 1.65;
+        text-rendering: optimizeLegibility;
       }
-      main {
-        max-width: 32rem;
+
+      .wrap {
+        width: min(100% - 2.5rem, 60rem);
+        margin-inline: auto;
       }
+
+      /* Small uppercase labels, like the running heads in a reading list. */
+      .label {
+        margin: 0;
+        font-family: var(--sans);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+
+      /* ---------- Header ---------- */
+
+      .masthead {
+        padding-block: clamp(3rem, 9vw, 6.5rem) clamp(2rem, 5vw, 3.5rem);
+      }
+
+      .masthead .label {
+        color: var(--accent);
+      }
+
       h1 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
+        margin: 0.6rem 0 0;
+        font-size: clamp(2.75rem, 11vw, 6.5rem);
+        line-height: 0.92;
+        letter-spacing: -0.025em;
+        font-weight: 600;
+      }
+
+      .lede {
+        max-width: 32em;
+        margin: 1.75rem 0 0;
+        font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+        line-height: 1.45;
+        color: var(--ink);
+      }
+
+      /* ---------- Entries ---------- */
+
+      .entry {
+        display: grid;
+        gap: 0.75rem 2.5rem;
+        padding-block: clamp(2rem, 4vw, 2.75rem);
+        border-top: 1px solid var(--rule);
+      }
+
+      .entry:last-of-type {
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .entry h2 {
+        margin: 0;
+        max-width: 30ch;
+        font-size: clamp(1.5rem, 4vw, 2.25rem);
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+        font-weight: 600;
+      }
+
+      .entry p {
+        max-width: 36em;
+        margin: 0.9rem 0 0;
+      }
+
+      .entry p:first-of-type {
+        margin-top: 0;
+      }
+
+      @media (min-width: 48rem) {
+        .entry {
+          grid-template-columns: 8.5rem 1fr;
+          align-items: start;
+        }
+
+        .entry .label {
+          padding-top: 0.55rem;
+        }
+      }
+
+      /* ---------- Placeholders ---------- */
+
+      /* Anything still to be filled in from content.md. */
+      .placeholder {
+        color: var(--accent);
+        border-bottom: 2px dotted currentColor;
+      }
+
+      /* ---------- Footer ---------- */
+
+      .site-footer {
+        padding-block: 2.5rem 4rem;
+      }
+
+      .site-footer .label {
+        margin-bottom: 0.75rem;
+      }
+
+      .site-footer ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-family: var(--sans);
+        font-size: 0.95rem;
+      }
+
+      .site-footer li + li {
+        margin-top: 0.4rem;
+      }
+
+      a {
+        color: var(--ink);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.18em;
+      }
+
+      a:hover {
+        color: var(--accent);
+      }
+
+      a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Your website will appear here</h1>
-      <p>Describe what you want in OpenCode, then refresh this page to see it.</p>
+    <header class="masthead wrap">
+      <p class="label">A personal page</p>
+      <h1><span class="placeholder">[Your name]</span></h1>
+      <p class="lede"><span class="placeholder">[One sentence about you]</span></p>
+    </header>
+
+    <main class="wrap">
+      <section class="entry">
+        <p class="label">01 — About</p>
+        <div>
+          <h2>What I study</h2>
+          <p><span class="placeholder">[What you study]</span></p>
+        </div>
+      </section>
+
+      <section class="entry">
+        <p class="label">02 — The idea</p>
+        <div>
+          <h2>
+            <span class="placeholder">[Name of the teaching approach]</span>
+          </h2>
+          <p>
+            A way of teaching — the idea in the humanities I care about most.
+          </p>
+          <p>
+            <span class="placeholder">[Why it matters to you]</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="entry">
+        <p class="label">03 — Who it's for</p>
+        <div>
+          <h2>Anyone curious</h2>
+          <p>
+            No background in the subject needed. If the idea interests you, I'd
+            like to explore it with you.
+          </p>
+        </div>
+      </section>
     </main>
+
+    <footer class="site-footer wrap">
+      <p class="label">Links</p>
+      <ul>
+        <li><span class="placeholder">[Link 1]</span></li>
+      </ul>
+    </footer>
   </body>
 </html>
